@@ -17,7 +17,7 @@ bot.load_extensions_from("./ultex/extensions")
 
 
 def run() -> None:
-    if os.name != "nt":
+    if os.name != "win32":
         import uvloop
         uvloop.install()
 
