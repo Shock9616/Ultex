@@ -70,7 +70,7 @@ async def invite(ctx: lightbulb.Context) -> None:
 @plugin.command()
 @lightbulb.option("upper", "Upper bound", int, default=10)
 @lightbulb.option("lower", "Lower bound", int, default=0)
-@lightbulb.command("rand", "Generate a random number")
+@lightbulb.command("rand", "Generate a random number", aliases=["random"])
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
 async def rand(ctx: lightbulb.Context) -> None:
     """ Generate a random number using the

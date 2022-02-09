@@ -10,7 +10,7 @@ plugin = lightbulb.Plugin("Fun Stuff", "Utility commands just for utility!")
 
 
 @plugin.command()
-@lightbulb.command("joke", "Tell a really bad joke")
+@lightbulb.command("joke", "Tell a really bad joke", aliases=["dadjoke"])
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
 async def joke(ctx: lightbulb.Context) -> None:
     """ Send a really bad joke """
