@@ -1,0 +1,5 @@
+# Ignore sublime-workspace files
+*.sublime-workspace
+*.sublime-project
+.env
+.DS_Store
