@@ -3,15 +3,45 @@ An extension which provides some moderation capabilities such
 as automatically censoring bad language and limiting spam
 """
 
+import json
+import hikari
 import lightbulb
 
 plugin = lightbulb.Plugin("Moderation", "Boring moderation stuff")
 
 
-def placeholder():
-    """ This function is a placeholder
-    for future moderation code """
-    pass
+@plugin.listener(hikari.GuildMessageCreateEvent)
+async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
+    """ Listen for messages and censor/warn
+    the author if they use bad language """
+    if event.is_bot or not event.content:
+        return
+
+    words = event.content.split()
+    with open("data/bad_language.txt", "r") as file:
+        bad_words = file.read().splitlines()
+
+        for word in words:
+            if word in bad_words:
+                with open("data/users.json", "r+") as file:
+                    users = json.load(file)
+
+                    if f"{event.message.author}" in users.keys():
+                        if users[f"{event.message.author}"]["swears"] < 10:
+                            users[f"{event.message.author}"]["swears"] += 1
+                            swear_count = users[f"{event.message.author}"]["swears"]
+                            await event.message.respond(f"Hey {event.message.author}! No searing on my Christian discord server! You have {10 - swear_count} swears until you are banned.")
+                        else:
+                            await event.app.rest.ban_user(event.message.author)
+                    else:
+                        users[f"{event.message.author}"] = {}
+                        users[f"{event.message.author}"]["swears"] = 1
+                        swear_count = users[f"{event.message.author}"]["swears"]
+                        await event.message.respond(f"Hey {event.message.author}! No swearing on my Christian discord swerver! You have {10 - swear_count} swears until you are banned.")
+
+                    file.seek(0)
+                    json.dump(users, file, indent=4)
+                    file.truncate()
 
 
 def load(bot: lightbulb.BotApp) -> None:
