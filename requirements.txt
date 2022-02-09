@@ -1,0 +1,6 @@
+hikari>=2.0.0.dev106
+hikari-lightbulb>=2.2.0
+python-dotenv>=0.19.2
+uvloop>=0.16.0; sys_platform != "win32"
+wikipedia>=1.4.0
+wolframalpha>=5.0.0
