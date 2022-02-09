@@ -68,8 +68,8 @@ async def invite(ctx: lightbulb.Context) -> None:
 
 
 @plugin.command()
-@lightbulb.option("lower", "Lower bound", int, default=0)
 @lightbulb.option("upper", "Upper bound", int, default=10)
+@lightbulb.option("lower", "Lower bound", int, default=0)
 @lightbulb.command("rand", "Generate a random number")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def rand(ctx: lightbulb.Context) -> None:
