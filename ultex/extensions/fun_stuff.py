@@ -11,7 +11,7 @@ plugin = lightbulb.Plugin("Fun Stuff", "Utility commands just for utility!")
 
 @plugin.command()
 @lightbulb.command("joke", "Tell a really bad joke")
-@lightbulb.implements(lightbulb.SlashCommand, lighbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
 async def joke(ctx: lightbulb.Context) -> None:
     """ Send a really bad joke """
     with open("data/jokes.txt", "r") as file:
