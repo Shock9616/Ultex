@@ -21,9 +21,10 @@ async def joke(ctx: lightbulb.Context) -> None:
 
 
 def load(bot: lightbulb.BotApp) -> None:
-    """ Load commands and plubins to the bot """
+    """ Load commands and plugins to the bot """
     bot.add_plugin(plugin)
 
 
 def unload(bot: lightbulb.BotApp) -> None:
+    """ Unload commands and plugins from the bot """
     bot.remove_plugin(plugin)
