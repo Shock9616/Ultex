@@ -12,7 +12,8 @@ plugin = lightbulb.Plugin("Leveling", "XP leveling system")
 
 
 @plugin.command()
-@lightbulb.command("xp", "Send a message with the command author's xp value", aliases=["level"])
+@lightbulb.command("xp", "Send a message with the command author's xp value",
+                   aliases=["level"])
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
 async def xp(ctx: lightbulb.Context) -> None:
     """ Send a message with the command author's xp value """
@@ -47,19 +48,23 @@ async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
 
         if f"{event.message.author}" in users.keys():
             if "xp" in users[f"{event.message.author}"].keys():
-                old_level = int(users[f"{event.message.author}"]["xp"] // 100) + 1
-                users[f"{event.message.author}"]["xp"] += 10 / old_level
+                old_level = (
+                    int(users[f"{event.message.author}"]["xp"] // 100) + 1)
+                users[f"{event.message.author}"]["xp"] += round(
+                    10 / old_level, 2)
             else:
                 old_level = 1
                 users[f"{event.message.author}"]["xp"] = 10
 
         else:
             users[f"{event.message.author}"] = {}
-            users[f"{event.message.author}"]["xp"] = 5
+            users[f"{event.message.author}"]["xp"] = 10
 
         new_level = int(users[f"{event.message.author}"]["xp"] // 100) + 1
         if new_level > old_level:
-            await event.message.respond(f"GG {event.message.author.username}! You have advanced to Level {new_level}!")
+            await event.message.respond(f"GG {event.message.author.username}!"
+                                        "You have advanced to Level "
+                                        f"{new_level}!")
 
         file.seek(0)
         json.dump(users, file, indent=4)
