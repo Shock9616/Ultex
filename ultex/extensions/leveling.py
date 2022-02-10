@@ -47,13 +47,19 @@ async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
 
         if f"{event.message.author}" in users.keys():
             if "xp" in users[f"{event.message.author}"].keys():
-                users[f"{event.message.author}"]["xp"] += 5
+                old_level = int(users[f"{event.message.author}"]["xp"] // 100) + 1
+                users[f"{event.message.author}"]["xp"] += 10 / old_level
             else:
-                users[f"{event.message.author}"]["xp"] = 5
+                old_level = 1
+                users[f"{event.message.author}"]["xp"] = 10
 
         else:
             users[f"{event.message.author}"] = {}
             users[f"{event.message.author}"]["xp"] = 5
+
+        new_level = int(users[f"{event.message.author}"]["xp"] // 100) + 1
+        if new_level > old_level:
+            await event.message.respond(f"GG {event.message.author.username}! You have advanced to Level {new_level}!")
 
         file.seek(0)
         json.dump(users, file, indent=4)
