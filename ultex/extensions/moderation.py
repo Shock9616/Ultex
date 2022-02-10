@@ -3,6 +3,7 @@ An extension which provides some moderation capabilities such
 as automatically censoring bad language and limiting spam
 """
 
+import time
 import json
 import hikari
 import lightbulb
@@ -17,12 +18,13 @@ async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
     if event.is_bot or not event.content:
         return
 
-    words = event.content.split()
+    words = event.content.lower().split()
     with open("data/bad_language.txt", "r") as file:
         bad_words = file.read().splitlines()
 
         for word in words:
             if word in bad_words:
+                await event.message.delete()
                 with open("data/users.json", "r+") as file:
                     users = json.load(file)
 
@@ -30,14 +32,20 @@ async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
                         if users[f"{event.message.author}"]["swears"] < 10:
                             users[f"{event.message.author}"]["swears"] += 1
                             swear_count = users[f"{event.message.author}"]["swears"]
-                            await event.message.respond(f"Hey {event.message.author}! No searing on my Christian discord server! You have {10 - swear_count} swears until you are banned.")
+                            response = await event.message.respond(f"Hey {event.message.author}! No searing on my Christian discord server! You have {10 - swear_count} violations left until you will be banned.")
+                            time.sleep(5)
+                            await response.delete()
                         else:
-                            await event.app.rest.ban_user(event.message.author)
+                            await event.app.rest.ban_user(user=event.message.author.id,
+                                                          guild=event.get_guild(),
+                                                          reason="Excessive bad language")
                     else:
                         users[f"{event.message.author}"] = {}
                         users[f"{event.message.author}"]["swears"] = 1
                         swear_count = users[f"{event.message.author}"]["swears"]
-                        await event.message.respond(f"Hey {event.message.author}! No swearing on my Christian discord swerver! You have {10 - swear_count} swears until you are banned.")
+                        response = await event.message.respond(f"Hey {event.message.author}! No swearing on my Christian discord swerver! You have {10 - swear_count} violations left until you will be banned.")
+                        time.sleep(5)
+                        await response.delete()
 
                     file.seek(0)
                     json.dump(users, file, indent=4)
