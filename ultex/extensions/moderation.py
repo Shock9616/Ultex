@@ -29,16 +29,29 @@ async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
                     users = json.load(file)
 
                     if f"{event.message.author}" in users.keys():
-                        if users[f"{event.message.author}"]["swears"] < 10:
-                            users[f"{event.message.author}"]["swears"] += 1
+                        if "swears" in users[f"{event.message.author}"].keys():
+                            if users[f"{event.message.author}"]["swears"] < 10:
+                                users[f"{event.message.author}"]["swears"] += 1
+                                swear_count = users[f"{event.message.author}"]["swears"]
+                                response = await event.message.respond(f"Hey {event.message.author}! No searing on my Christian discord server! You have {10 - swear_count} violations left until you will be banned.")
+                                time.sleep(5)
+                                await response.delete()
+                            else:
+                                await event.app.rest.ban_user(user=event.message.author.id,
+                                                              guild=event.get_guild(),
+                                                              reason="Excessive bad language")
+                        else:
+                            users[f"{event.message.author}"]["swears"] = 1
                             swear_count = users[f"{event.message.author}"]["swears"]
                             response = await event.message.respond(f"Hey {event.message.author}! No searing on my Christian discord server! You have {10 - swear_count} violations left until you will be banned.")
                             time.sleep(5)
                             await response.delete()
+
+                        if "xp" in users[f"{event.message.author}"].keys():
+                            users[f"{event.message.author}"]["xp"] -= 20
                         else:
-                            await event.app.rest.ban_user(user=event.message.author.id,
-                                                          guild=event.get_guild(),
-                                                          reason="Excessive bad language")
+                            users[f"{event.message.author}"]["xp"] = -20
+
                     else:
                         users[f"{event.message.author}"] = {}
                         users[f"{event.message.author}"]["swears"] = 1
@@ -46,6 +59,7 @@ async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
                         response = await event.message.respond(f"Hey {event.message.author}! No swearing on my Christian discord swerver! You have {10 - swear_count} violations left until you will be banned.")
                         time.sleep(5)
                         await response.delete()
+                        users[f"{event.message.author}"]["xp"] = -20
 
                     file.seek(0)
                     json.dump(users, file, indent=4)
@@ -53,9 +67,10 @@ async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
 
 
 def load(bot: lightbulb.BotApp) -> None:
-    """ Load commands and plubins to the bot """
+    """ Load commands and plugins to the bot """
     bot.add_plugin(plugin)
 
 
 def unload(bot: lightbulb.BotApp) -> None:
+    """ Unload commands and plugins from the bot """
     bot.remove_plugin(plugin)
