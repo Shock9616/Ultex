@@ -11,12 +11,16 @@ import lightbulb
 plugin = lightbulb.Plugin("Leveling", "XP leveling system")
 
 
+# ---------- Command Functions ----------
+
+# ----- XP/Level Command -----
 @plugin.command()
 @lightbulb.command("xp", "Send a message with the command author's xp value",
                    aliases=["level"])
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
 async def xp(ctx: lightbulb.Context) -> None:
-    """ Send a message with the command author's xp value """
+    """ Respond with an embed with the command
+    author's xp value and level """
     with open("data/users.json", "r") as file:
         users = json.load(file)
         user = ctx.author
@@ -36,6 +40,9 @@ async def xp(ctx: lightbulb.Context) -> None:
     await ctx.respond("", embed=embed)
 
 
+# ---------- Listener Functions ----------
+
+# ----- XP/Level Up Listener -----
 @plugin.listener(hikari.GuildMessageCreateEvent)
 async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
     """ Listen for messages and give
@@ -69,6 +76,9 @@ async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
         file.seek(0)
         json.dump(users, file, indent=4)
         file.truncate()
+
+
+# --------- Plugin Load and Unload Functions ----------
 
 
 def load(bot: lightbulb.BotApp) -> None:

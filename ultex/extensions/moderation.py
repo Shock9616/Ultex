@@ -11,6 +11,9 @@ import lightbulb
 plugin = lightbulb.Plugin("Moderation", "Boring moderation stuff")
 
 
+# ---------- Listener Functions ----------
+
+# ----- Auto-censoring Listener -----
 @plugin.listener(hikari.GuildMessageCreateEvent)
 async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
     """ Listen for messages and censor/warn
@@ -64,6 +67,9 @@ async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
                     file.seek(0)
                     json.dump(users, file, indent=4)
                     file.truncate()
+
+
+# --------- Plugin Load and Unload Functions ----------
 
 
 def load(bot: lightbulb.BotApp) -> None:

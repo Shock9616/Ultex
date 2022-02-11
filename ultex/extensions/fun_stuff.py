@@ -9,6 +9,9 @@ import lightbulb
 plugin = lightbulb.Plugin("Fun Stuff", "Utility commands just for utility!")
 
 
+# ---------- Command Functions ----------
+
+# ----- Joke Command -----
 @plugin.command()
 @lightbulb.command("joke", "Tell a really bad joke", aliases=["dadjoke"])
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
@@ -18,6 +21,9 @@ async def joke(ctx: lightbulb.Context) -> None:
         jokes = file.read().splitlines()
         joke = random.choice(jokes)
         await ctx.respond(f"{joke}")
+
+
+# --------- Plugin Load and Unload Functions ----------
 
 
 def load(bot: lightbulb.BotApp) -> None:

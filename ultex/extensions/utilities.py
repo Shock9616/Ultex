@@ -17,6 +17,9 @@ import wolframalpha
 plugin = lightbulb.Plugin("Utilities", "Exactly what it sounds like :)")
 
 
+# ---------- Command functions ----------
+
+# ----- Invite Command -----
 @plugin.command()
 @lightbulb.option("recipients", "List of people to invite", str, required=True)
 @lightbulb.command("invite",
@@ -67,6 +70,7 @@ async def invite(ctx: lightbulb.Context) -> None:
     await ctx.edit_last_response(response.replace("Sending", "Sent"))
 
 
+# ----- Rand Command -----
 @plugin.command()
 @lightbulb.option("upper", "Upper bound", int, default=10)
 @lightbulb.option("lower", "Lower bound", int, default=0)
@@ -80,6 +84,7 @@ async def rand(ctx: lightbulb.Context) -> None:
     await ctx.respond(f"Your random number is {rand}")
 
 
+# ----- Search Command -----
 @plugin.command()
 @lightbulb.option("query", "Search query", str)
 @lightbulb.command("search", "Generate a random number")
@@ -113,6 +118,9 @@ async def search(ctx: lightbulb.Context) -> None:
                     inline=False)
 
     await ctx.edit_last_response("", embed=embed)
+
+
+# --------- Plugin Load and Unload Functions ----------
 
 
 def load(bot: lightbulb.BotApp) -> None:

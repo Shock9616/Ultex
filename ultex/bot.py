@@ -1,5 +1,6 @@
 """
-The main entry point for the program.
+Main bot file that controls the bot itself, its settings,
+and the plugins that are loaded on startup
 """
 
 import os
@@ -18,6 +19,9 @@ bot = lightbulb.BotApp(
 bot.load_extensions_from("./ultex/extensions")
 
 
+# ---------- Listener Functions ----------
+
+
 @bot.listen()
 async def on_starting(event: hikari.StartingEvent) -> None:
     """ Listener function for when the bot starts up """
@@ -30,7 +34,12 @@ async def on_stopping(event: hikari.StoppingEvent) -> None:
     await bot.d.aio_session.close()
 
 
+# --------------------
+
+
 def run() -> None:
+    """ Run the bot. Use uvloop instead
+    of asyncio if not on Windows """
     if os.name != "win32":
         import uvloop
         uvloop.install()
