@@ -6,7 +6,7 @@ import random
 import lightbulb
 
 
-plugin = lightbulb.Plugin("Fun Stuff", "Utility commands just for utility!")
+plugin = lightbulb.Plugin("Fun Stuff", "Fun commands just for fun!")
 
 
 # ---------- Command Functions ----------
