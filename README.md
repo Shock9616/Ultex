@@ -17,4 +17,3 @@ to "What was the temperature in Quito Ecuador on September 11 2018?"
 * And much much more!
 
 *Disclaimer: This bot is still a work in progress and as such, its other commands are not all fully implemented*
-
