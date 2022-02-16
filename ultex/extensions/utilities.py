@@ -52,12 +52,11 @@ async def invite(ctx: lightbulb.Context) -> None:
     server.starttls()
     server.login(ADDRESS, PASSWORD)
 
-    msg = text(str("Greetings earthling!\n\n" + str(ctx.author)
-                   + " has invited you to join the "
-                   + str(ctx.get_guild().name) + " discord server.\nClick the"
-                   + " link below to accept the invitation.\n" + str(link)
-                   + "\n\nHope to talk to you soon!\n"
-                   + str(ctx.get_guild().name) + "."))
+    msg = text(str(f"Greetings earthling!\n\n{str(ctx.author)} has invited "
+                   f"you to join the {str(ctx.get_guild().name)} discord "
+                   "server.\nClick the link below to accept the invitation.\n"
+                   f"{str(link)}\n\nHope to talk to you soon!\n"
+                   f"{str(ctx.get_guild().name)}."))
     msg["Subject"] = f"Invite to {str(ctx.get_guild().name)}"
     msg["From"] = ADDRESS
 
