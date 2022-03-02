@@ -143,9 +143,17 @@ async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
                 capture_output=True,
                 text=True).stdout
 
-            os.remove("data/code_exec/code.py")
+            if not output:
+                error: str = subprocess.run(
+                    ["python3", "data/code_exec/code.py"],
+                    capture_output=True,
+                    text=True).stderr
+                await event.message.respond(f"Code Output:```{error}```")
 
-            await event.message.respond(f"Code Output:```{output}```")
+            else:
+                await event.message.respond(f"Code Output:```{output}```")
+
+            os.remove("data/code_exec/code.py")
 
 
 # --------- Plugin Load and Unload Functions ----------
