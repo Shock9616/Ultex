@@ -103,7 +103,7 @@ async def search(ctx: lightbulb.Context) -> None:
         try:
             answer = wikipedia.summary(query, sentences=2)
         except wikipedia.exceptions.PageError:
-            ctx.respond("Sorry, there were no search results for your query.")
+            await ctx.respond("Sorry, there were no search results for your query.")
 
     embed = hikari.Embed(
         title=query,
@@ -118,40 +118,6 @@ async def search(ctx: lightbulb.Context) -> None:
                     inline=False)
 
     await ctx.edit_last_response("", embed=embed)
-
-
-# ---------- Listener Functions ----------
-@plugin.listener(hikari.GuildMessageCreateEvent)
-async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
-    """ Listen for messages and if the message
-    contains a code block, execute it. """
-    content: str = event.message.content
-    if "```" in content.split():
-        for word in content.split():
-            if "```" in word:
-                language: str = word[3:].lower()
-                break
-
-        code: str = content.replace(f"```{language}", "").replace("```", "")
-
-        if language == "python":
-            with open("data/code_exec/code.py", "w+") as file:
-                file.write(code)
-
-            output: str = subprocess.run(
-                ["python3", "data/code_exec/code.py"],
-                capture_output=True,
-                text=True).stdout
-
-            if not output:
-                output: str = subprocess.run(
-                    ["python3", "data/code_exec/code.py"],
-                    capture_output=True,
-                    text=True).stderr
-
-            os.remove("data/code_exec/code.py")
-
-            await event.message.respond(f"Code Output:```{output}```")
 
 
 # --------- Plugin Load and Unload Functions ----------

@@ -13,7 +13,7 @@ bot = lightbulb.BotApp(
     default_enabled_guilds=int(os.environ["TEST_GUILD_ID"]),
     help_slash_command=True,
     intents=hikari.Intents.ALL,
-    prefix="!",
+    prefix=os.environ["PREFIX"],
 )
 
 bot.load_extensions_from("./ultex/extensions")
