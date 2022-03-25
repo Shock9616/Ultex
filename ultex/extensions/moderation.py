@@ -26,59 +26,60 @@ async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
     with open("data/bad_language.txt", "r") as file:
         bad_words = file.read().splitlines()
 
-        for word in words:
-            if word in bad_words:
-                await event.message.delete()
-                with open("data/users.json", "r+") as file:
-                    users = json.load(file)
+    for word in words:
+        if word in bad_words:
+            await event.message.delete()
+            with open("data/users.json", "r") as file:
+                users = json.load(file)
 
-                    if f"{user}" in users.keys():
-                        if "swears" in users[f"{user}"].keys():
-                            if users[f"{user}"]["swears"] < 10:
-                                users[f"{user}"]["swears"] += 1
-                                swear_count = users[f"{user}"]["swears"]
-                                response = await event.message.respond(
-                                    f"Hey {user}! No swearing on my Christian "
-                                    "discord server! You have "
-                                    f"{10 - swear_count} violations left until"
-                                    " you will be banned.")
-                                time.sleep(5)
-                                await response.delete()
-                            else:
-                                await event.app.rest.ban_user(
-                                    user=user.id,
-                                    guild=event.get_guild(),
-                                    reason="Excessive bad language")
-                        else:
-                            users[f"{user}"]["swears"] = 1
-                            swear_count = users[f"{user}"]["swears"]
-                            response = await event.message.respond(
-                                f"Hey {user}! No swearing on my Christian "
-                                f"discord server! You have {10 - swear_count} "
-                                "violations left until you will be banned.")
-                            time.sleep(5)
-                            await response.delete()
-
-                        if "xp" in users[f"{user}"].keys():
-                            users[f"{user}"]["xp"] -= 20
-                        else:
-                            users[f"{user}"]["xp"] = -20
-
-                    else:
-                        users[f"{user}"] = {}
-                        users[f"{user}"]["swears"] = 1
+            if f"{user}" in users.keys():
+                if "swears" in users[f"{user}"].keys():
+                    if users[f"{user}"]["swears"] < 10:
+                        users[f"{user}"]["swears"] += 1
                         swear_count = users[f"{user}"]["swears"]
                         response = await event.message.respond(
-                            f"Hey {user}! No swearing on my Christian discord "
-                            f"swerver! You have {10 - swear_count} violations "
-                            "left until you will be banned.")
+                            f"Hey {user}! No swearing on my Christian " +
+                            "discord server! You have " +
+                            f"{10 - swear_count} violations left until" +
+                            " you will be banned.")
                         time.sleep(5)
                         await response.delete()
-                        users[f"{user}"]["xp"] = -20
+                    else:
+                        await event.app.rest.ban_user(
+                            user=user.id,
+                            guild=event.get_guild(),
+                            reason="Excessive bad language")
+                else:
+                    users[f"{user}"]["swears"] = 1
+                    swear_count = users[f"{user}"]["swears"]
+                    response = await event.message.respond(
+                        f"Hey {user}! No swearing on my Christian " +
+                        f"discord server! You have {10 - swear_count} " +
+                        "violations left until you will be banned.")
+                    time.sleep(5)
+                    await response.delete()
 
-                    file.seek(0)
-                    json.dump(users, file, indent=4)
-                    file.truncate()
+                if "xp" in users[f"{user}"].keys():
+                    users[f"{user}"]["xp"] -= 20
+                else:
+                    users[f"{user}"]["xp"] = -20
+
+            else:
+                users[f"{user}"] = {}
+                users[f"{user}"]["swears"] = 1
+                swear_count = users[f"{user}"]["swears"]
+                response = await event.message.respond(
+                    f"Hey {user}! No swearing on my Christian discord " +
+                    f"swerver! You have {10 - swear_count} violations " +
+                    "left until you will be banned.")
+                time.sleep(5)
+                await response.delete()
+                users[f"{user}"]["xp"] = -20
+
+            with open("data/users.json", "w") as file:
+                file.seek(0)
+                json.dump(users, file, indent=4)
+                file.truncate()
 
 
 # --------- Plugin Load and Unload Functions ----------
