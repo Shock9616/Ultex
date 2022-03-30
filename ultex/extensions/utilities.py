@@ -26,7 +26,7 @@ plugin = lightbulb.Plugin("Utilities", "Exactly what it sounds like :)")
 @lightbulb.command("invite",
                    "Send an invite code to the specified email address(es)")
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
-async def invite(ctx: lightbulb.Context) -> None:
+async def invite_command(ctx: lightbulb.Context) -> None:
     """ Generate an invite code and send it
     to the specified email address(es) """
 
@@ -76,7 +76,7 @@ async def invite(ctx: lightbulb.Context) -> None:
 @lightbulb.option("lower", "Lower bound", int, default=0)
 @lightbulb.command("rand", "Generate a random number", aliases=["random"])
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
-async def rand(ctx: lightbulb.Context) -> None:
+async def rand_command(ctx: lightbulb.Context) -> None:
     """ Generate a random number using the
     given bounds in lightbulb.Context """
 
@@ -89,7 +89,7 @@ async def rand(ctx: lightbulb.Context) -> None:
 @lightbulb.option("query", "Search query", str)
 @lightbulb.command("search", "Generate a random number")
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
-async def search(ctx: lightbulb.Context) -> None:
+async def search_command(ctx: lightbulb.Context) -> None:
     """ Search for literally everything
     The bot isn't always correct but it will certainly try its best to be """
     query = ctx.options.query

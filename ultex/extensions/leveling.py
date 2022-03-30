@@ -18,7 +18,7 @@ plugin = lightbulb.Plugin("Leveling", "XP leveling system")
 @lightbulb.command("xp", "Send a message with the command author's xp value",
                    aliases=["level"])
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
-async def xp(ctx: lightbulb.Context) -> None:
+async def xp_command(ctx: lightbulb.Context) -> None:
     """ Respond with an embed with the command
     author's xp value and level """
     with open("data/users.json", "r") as file:

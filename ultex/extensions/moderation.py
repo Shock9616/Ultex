@@ -7,6 +7,7 @@ import time
 import json
 import hikari
 import lightbulb
+from typing import Optional
 
 plugin = lightbulb.Plugin("Moderation", "Boring moderation stuff")
 
@@ -47,7 +48,7 @@ async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
                     else:
                         await event.app.rest.ban_user(
                             user=user.id,
-                            guild=event.get_guild(),
+                            guild=event.guild_id,
                             reason="Excessive bad language")
                 else:
                     users[f"{user}"]["swears"] = 1
@@ -82,7 +83,45 @@ async def on_message_create(event: hikari.GuildMessageCreateEvent) -> None:
                 file.truncate()
 
 
-# --------- Plugin Load and Unload Functions ----------
+# ---------- Command Functions ----------
+
+# ----- Kick Command -----
+@plugin.command()
+@lightbulb.option("user", "User to kick from the guild", hikari.PartialUser, required=True)
+@lightbulb.option("reason", "Reason for kicking the user", str, default="")
+@lightbulb.command("kick", "Kick a user from the guild")
+@lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
+async def kick_command(ctx: lightbulb.Context) -> None:
+    """ Kick a user from the guild """
+    guild: Optional[hikari.Guild] = ctx.get_guild()
+    if guild is not None:
+        await guild.kick(
+            user=int(ctx.options.user.strip("<>!@")),
+            reason=ctx.options.reason
+        )
+        await ctx.respond(f"Kicked user {ctx.options.user}")
+
+
+# ----- Ban Command -----
+@plugin.command()
+@lightbulb.option("user", "User to ban from the guild", hikari.PartialUser, required=True)
+@lightbulb.option("reason", "Reason for banning the user", str, default="")
+@lightbulb.command("ban", "Ban a user from the guild")
+@lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
+async def ban_command(ctx: lightbulb.Context) -> None:
+    """ Ban a user from the guild """
+    guild: Optional[hikari.Guild] = ctx.get_guild()
+    if guild is not None:
+        await guild.ban(
+            user=int(ctx.options.user.strip("<>!@")),
+            reason=ctx.options.reason
+        )
+        await ctx.respond(f"Banned user {ctx.options.user}")
+
+
+# TODO: mute(user), unmute(user), deafen(user), undeafen(user), members(role)
+
+# ---------- Plugin Load and Unload Functions ----------
 
 
 def load(bot: lightbulb.BotApp) -> None:

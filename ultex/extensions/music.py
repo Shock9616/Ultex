@@ -5,7 +5,7 @@ playing music in a user's voice channel
 
 import os
 import logging
-import random
+# import random  # TODO: Add shuffle command
 import datetime as dt
 from typing import Optional
 
@@ -106,13 +106,14 @@ async def start_lavalink(event: hikari.ShardReadyEvent) -> None:
 # ---------- Command Functions ----------
 
 
+# ----- Join Command -----
 @plugin.command()
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.command("join",
                    "Joins the voice channel you are in.",
                    aliases=["connect"])
 @lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
-async def join(ctx: lightbulb.Context) -> None:
+async def join_command(ctx: lightbulb.Context) -> None:
     """ Joins the voice channel you are in """
     channel_id = await _join(ctx)
 
@@ -120,13 +121,14 @@ async def join(ctx: lightbulb.Context) -> None:
         await ctx.respond(f"Joined <#{channel_id}>")
 
 
+# ----- Leave Command -----
 @plugin.command()
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.command("leave",
                    "Leaves the current voice channel and clears the queue.",
                    aliases=["disconnect"])
 @lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
-async def leave(ctx: lightbulb.Context) -> None:
+async def leave_command(ctx: lightbulb.Context) -> None:
     """ Leaves the voice channel the bot is in, clearing the queue """
 
     await plugin.bot.d.lavalink.destroy(ctx.guild_id)
@@ -144,6 +146,7 @@ async def leave(ctx: lightbulb.Context) -> None:
     await ctx.respond("Left voice channel")
 
 
+# ----- Play Command -----
 @plugin.command()
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.option("song",
@@ -152,7 +155,7 @@ async def leave(ctx: lightbulb.Context) -> None:
 @lightbulb.command("play",
                    "Searches on youtube, or adds the URL to the queue.")
 @lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
-async def play(ctx: lightbulb.Context) -> None:
+async def play_command(ctx: lightbulb.Context) -> None:
     """ Searches the query on youtube, or adds the URL to the queue """
 
     song = ctx.options.song
@@ -185,22 +188,24 @@ async def play(ctx: lightbulb.Context) -> None:
     await ctx.respond(f"Added to queue: {query_information.tracks[0].info.title}")
 
 
+# ----- Stop Command -----
 @plugin.command()
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.command("stop", "Stops the current song (skip to continue).")
 @lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
-async def stop(ctx: lightbulb.Context) -> None:
+async def stop_command(ctx: lightbulb.Context) -> None:
     """ Stops the current song (skip to continue) """
 
     await plugin.bot.d.lavalink.stop(ctx.guild_id)
     await ctx.respond("Stopped playing")
 
 
+# ----- Skip Command -----
 @plugin.command()
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.command("skip", "Skips the current song.")
 @lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
-async def skip(ctx: lightbulb.Context) -> None:
+async def skip_command(ctx: lightbulb.Context) -> None:
     """ Skips the current song """
 
     skip = await plugin.bot.d.lavalink.skip(ctx.guild_id)
@@ -218,35 +223,38 @@ async def skip(ctx: lightbulb.Context) -> None:
         await ctx.respond(f"Skipped: {skip.track.info.title}")
 
 
+# ----- Pause Command -----
 @plugin.command()
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.command("pause", "Pauses the current song.")
 @lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
-async def pause(ctx: lightbulb.Context) -> None:
+async def pause_command(ctx: lightbulb.Context) -> None:
     """ Pauses the current song """
 
     await plugin.bot.d.lavalink.pause(ctx.guild_id)
     await ctx.respond("Paused player")
 
 
+# ----- Resume Command -----
 @plugin.command()
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.command("resume", "Resumes playing the current song.")
 @lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
-async def resume(ctx: lightbulb.Context) -> None:
+async def resume_command(ctx: lightbulb.Context) -> None:
     """ Resumes playing the current song """
 
     await plugin.bot.d.lavalink.resume(ctx.guild_id)
     await ctx.respond("Resumed player")
 
 
+# ----- Now Playing Command -----
 @plugin.command()
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.command("nowplaying",
                    "Gets the song that's currently playing.",
                    aliases=["np"])
 @lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
-async def now_playing(ctx: lightbulb.Context) -> None:
+async def now_playing_command(ctx: lightbulb.Context) -> None:
     """ Gets the song that's currently playing """
 
     node = await plugin.bot.d.lavalink.get_guild_node(ctx.guild_id)
@@ -266,13 +274,14 @@ async def now_playing(ctx: lightbulb.Context) -> None:
     await ctx.respond("", embed=embed)
 
 
+# ----- Up Next Commaand -----
 @plugin.command()
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.command("upnext",
                    "Shows the next 5 songs in the queue",
                    aliases=["queue"])
 @lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
-async def up_next(ctx: lightbulb.Context) -> None:
+async def up_next_command(ctx: lightbulb.Context) -> None:
     """ Gets the current and next 5 songes in the queue """
     node = await plugin.bot.d.lavalink.get_guild_node(ctx.guild_id)
 
@@ -297,6 +306,7 @@ async def up_next(ctx: lightbulb.Context) -> None:
     await ctx.respond("", embed=embed)
 
 
+# ----- Data Command (Server owner only) -----
 @plugin.command()
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.add_checks(lightbulb.owner_only)
@@ -306,7 +316,7 @@ async def up_next(ctx: lightbulb.Context) -> None:
                   modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.command("data", "Load or read data from the node.")
 @lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
-async def data(ctx: lightbulb.Context) -> None:
+async def data_command(ctx: lightbulb.Context) -> None:
     """
     Load or read data from the node
 
@@ -329,6 +339,9 @@ async def data(ctx: lightbulb.Context) -> None:
         else:
             node.set_data({args[0]: args[1]})
     await ctx.respond(node.get_data())
+
+
+# ---------- Listener Functions ----------
 
 
 if HIKARI_VOICE:
