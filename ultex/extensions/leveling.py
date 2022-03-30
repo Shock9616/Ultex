@@ -2,8 +2,8 @@
 An extension which provides an xp system based on users' messages
 """
 
-import json
 import datetime as dt
+import json
 
 import hikari
 import lightbulb

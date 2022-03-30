@@ -2,8 +2,8 @@
 An extension that contains some fun commands like jokes
 """
 
-import random
 import lightbulb
+import random
 
 
 plugin = lightbulb.Plugin("Fun Stuff", "Fun commands just for fun!")

@@ -3,10 +3,11 @@ An extension that contains more utilitarian commands
 such as random number generation or invite link sharing
 """
 
+import datetime as dt
 import os
 import random
 import smtplib
-import datetime as dt
+
 from email.mime.text import MIMEText as text
 
 import hikari

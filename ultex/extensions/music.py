@@ -3,10 +3,11 @@ An extension that adds functionality for
 playing music in a user's voice channel
 """
 
-import os
 import logging
+import os
 # import random  # TODO: Add shuffle command
 import datetime as dt
+
 from typing import Optional
 
 import hikari

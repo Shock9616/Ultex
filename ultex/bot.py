@@ -3,45 +3,43 @@ Main bot file that controls the bot itself, its settings,
 and the plugins that are loaded on startup
 """
 
-import os
-import aiohttp
 import hikari
 import lightbulb
+import logging
 
-bot = lightbulb.BotApp(
-    token=os.environ["TOKEN"],
-    default_enabled_guilds=int(os.environ["TEST_GUILD_ID"]),
-    help_slash_command=True,
-    intents=hikari.Intents.ALL,
-    prefix=os.environ["PREFIX"],
-)
-
-bot.load_extensions_from("./ultex/extensions")
+from pathlib import Path
+from typing import Optional
 
 
-# ---------- Listener Functions ----------
+class Bot(lightbulb.BotApp):
+    def __init__(self,
+                 token: str,
+                 default_enabled_guilds: int,
+                 help_slash_command: bool,
+                 intents: hikari.Intents,
+                 prefix: str,
+                 excluded_extensions: Optional[list[str]]=None):
+        super().__init__(
+            token=token,
+            default_enabled_guilds=default_enabled_guilds,
+            help_slash_command=help_slash_command,
+            intents=intents,
+            prefix=prefix)
+        self.excluded_extensions: list[str] = [] if excluded_extensions is None else excluded_extensions
+        self._extensions: list[str] = [p.stem for p in Path(".").glob("./ultex/extensions/*.py")]
+        self._LOGGER = logging.getLogger("lightbulb.app")
 
+    def setup(self):
+        """
+        Set up the bot before running
+        Ex. loading extensions
+        """
+        for ext in self._extensions:
+            if ext not in self.excluded_extensions:
+                self.load_extensions(f"ultex.extensions.{ext}")
+            else:
+                self._LOGGER.info(f"Extension excluded 'ultex.extensions.{ext}'")
 
-@bot.listen()
-async def on_starting(event: hikari.StartingEvent) -> None:
-    """ Listener function for when the bot starts up """
-    bot.d.aio_session = aiohttp.ClientSession()
-
-
-@bot.listen()
-async def on_stopping(event: hikari.StoppingEvent) -> None:
-    """ Listerner function for when the bot shuts down """
-    await bot.d.aio_session.close()
-
-
-# --------------------
-
-
-def run() -> None:
-    """ Run the bot. Use uvloop instead
-    of asyncio if not on Windows """
-    if os.name != "win32":
-        import uvloop
-        uvloop.install()
-
-    bot.run()
+    def run(self):
+        self.setup()
+        super().run()

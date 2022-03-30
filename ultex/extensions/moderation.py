@@ -3,11 +3,12 @@ An extension which provides some moderation capabilities such
 as automatically censoring bad language and limiting spam
 """
 
-import time
-import json
-import hikari
-import lightbulb
 import datetime as dt
+import hikari
+import json
+import lightbulb
+import time
+
 from typing import Optional
 
 plugin = lightbulb.Plugin("Moderation", "Boring moderation stuff")
