@@ -6,7 +6,6 @@ such as random number generation or invite link sharing
 import os
 import random
 import smtplib
-import subprocess
 import datetime as dt
 from email.mime.text import MIMEText as text
 
@@ -53,10 +52,10 @@ async def invite_command(ctx: lightbulb.Context) -> None:
     server.starttls()
     server.login(ADDRESS, PASSWORD)
 
-    msg = text(str(f"Greetings earthling!\n\n{str(ctx.author)} has invited "
-                   f"you to join the {str(ctx.get_guild().name)} discord "
-                   "server.\nClick the link below to accept the invitation.\n"
-                   f"{str(link)}\n\nHope to talk to you soon!\n"
+    msg = text(str(f"Greetings earthling!\n\n{str(ctx.author)} has invited " +
+                   f"you to join the {str(ctx.get_guild().name)} discord " +
+                   "server.\nClick the link below to accept the invitation.\n" +
+                   f"{str(link)}\n\nHope to talk to you soon!\n" +
                    f"{str(ctx.get_guild().name)}."))
     msg["Subject"] = f"Invite to {str(ctx.get_guild().name)}"
     msg["From"] = ADDRESS
@@ -104,6 +103,7 @@ async def search_command(ctx: lightbulb.Context) -> None:
             answer = wikipedia.summary(query, sentences=2)
         except wikipedia.exceptions.PageError:
             await ctx.respond("Sorry, there were no search results for your query.")
+            return
 
     embed = hikari.Embed(
         title=query,
