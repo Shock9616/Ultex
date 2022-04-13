@@ -6,17 +6,21 @@ due to the discontinuation of Discord.py
 import aiohttp
 import hikari
 import os
+import yaml
 
 from ultex.bot import Bot
 
 if __name__ == "__main__":
+    with open("config.yml", "r") as cfg_file:
+        cfg = yaml.safe_load(cfg_file)
+
     bot = Bot(
         token=os.environ["TOKEN"],
         default_enabled_guilds=int(os.environ["TEST_GUILD_ID"]),
         help_slash_command=True,
         intents=hikari.Intents.ALL,
-        prefix=os.environ["PREFIX"],
-        excluded_extensions=["music"]
+        prefix=cfg["command_prefix"],
+        excluded_extensions=cfg["excluded_extensions"]
     )
 
     # ---------- Listener Functions ----------

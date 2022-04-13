@@ -1,0 +1,9 @@
+# -------------------------------------------
+# ----- Ultex Discord Bot Configuration -----
+# -------------------------------------------
+
+---
+command_prefix: '!'
+excluded_extensions:
+  - "music"
+  - "fun_stuff"
