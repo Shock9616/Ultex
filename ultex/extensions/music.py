@@ -3,10 +3,10 @@ An extension that adds functionality for
 playing music in a user's voice channel
 """
 
+import datetime as dt
 import logging
 import os
-# import random  # TODO: Add shuffle command
-import datetime as dt
+import random  # TODO: Add shuffle command
 
 from typing import Optional
 
@@ -246,6 +246,26 @@ async def resume_command(ctx: lightbulb.Context) -> None:
 
     await plugin.bot.d.lavalink.resume(ctx.guild_id)
     await ctx.respond("Resumed player")
+
+
+# ----- Shuffle Command -----
+@plugin.command()
+@lightbulb.command("shuffle", "Shuffles the tracks left in the queue.")
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+async def shuffle_command(ctx: lightbulb.Context) -> None:
+    """ Shuffles the tracks left in the queue """
+    node = await plugin.bot.d.lavalink.get_guild_node(ctx.guild_id)
+    queue = node.queue()
+
+    if not node or not queue:
+        await ctx.respond("Nothing is playing at the moment.")
+        return
+
+    queue = random.shuffle(queue)
+
+    node.set_data(queue)
+
+    await ctx.respond("Shuffled queue")
 
 
 # ----- Now Playing Command -----
