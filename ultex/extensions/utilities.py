@@ -46,28 +46,33 @@ async def invite_command(ctx: lightbulb.Context) -> None:
 
     ADDRESS = os.environ["BOT_EMAIL_ADDRESS"]
     PASSWORD = os.environ["BOT_EMAIL_PASSWD"]
-    link = await ctx.app.rest.create_invite(ctx.get_channel().id,
-                                            max_uses=len(recipients))
+    channel = ctx.get_channel()
+    if not isinstance(channel, hikari.Snowflake) and channel is not None:
+        link = await ctx.app.rest.create_invite(channel.id,
+                                                max_uses=len(recipients))
+    else:
+        return
 
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()
     server.login(ADDRESS, PASSWORD)
 
-    msg = text(str(f"Greetings earthling!\n\n{str(ctx.author)} has invited " +
-                   f"you to join the {str(ctx.get_guild().name)} discord " +
-                   "server.\nClick the link below to accept the invitation.\n" +
-                   f"{str(link)}\n\nHope to talk to you soon!\n" +
-                   f"{str(ctx.get_guild().name)}."))
-    msg["Subject"] = f"Invite to {str(ctx.get_guild().name)}"
-    msg["From"] = ADDRESS
+    if ctx.get_guild() is not None:
+        msg = text(str(f"Greetings earthling!\n\n{str(ctx.author)} has invited " +
+                       f"you to join the {str(ctx.get_guild())} discord " +
+                       "server.\nClick the link below to accept the invitation.\n" +
+                       f"{str(link)}\n\nHope to talk to you soon!\n" +
+                       f"{str(ctx.get_guild())}."))
+        msg["Subject"] = f"Invite to {str(ctx.get_guild())}"
+        msg["From"] = ADDRESS
 
-    for recipient in recipients:
-        msg["To"] = recipient
-        server.sendmail(ADDRESS, recipient, msg.as_string())
+        for recipient in recipients:
+            msg["To"] = recipient
+            server.sendmail(ADDRESS, recipient, msg.as_string())
 
-    server.quit()
+        server.quit()
 
-    await ctx.edit_last_response(response.replace("Sending", "Sent"))
+        await ctx.edit_last_response(response.replace("Sending", "Sent"))
 
 
 # ----- Rand Command -----
